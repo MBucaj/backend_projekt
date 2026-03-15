@@ -1,24 +1,31 @@
 import express from 'express';
-const router = express.Router();
 
-let stores = [
-  { id: 1, name: "Konzum", city: "Pula" },
-  { id: 2, name: "Plodine", city: "Rovinj" }
-];
+function storeRoutes(db) {
+    const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.json(stores);
-});
+    router.get('/', async (req, res) => {
+        try {
+            let stores_collection = db.collection('stores');
+            let stores = await stores_collection.find().toArray();
+            res.status(200).json(stores);
+        } catch (error) {
+            res.status(500).json({ error: 'Greška pri dohvaćanju trgovina' });
+        }
+    });
 
-router.post('/', (req, res) => {
-  const newStore = {
-    id: stores.length + 1,
-    name: req.body.name,
-    city: req.body.city
-  };
+    router.post('/', async (req, res) => {
+        let novaTrgovina = req.body;
 
-  stores.push(newStore);
-  res.status(201).json(newStore);
-});
+        try {
+            let stores_collection = db.collection('stores');
+            let result = await stores_collection.insertOne(novaTrgovina);
+            res.status(201).json({ insertedId: result.insertedId });
+        } catch (error) {
+            res.status(400).json({ error: 'Greška pri dodavanju trgovine' });
+        }
+    });
 
-export default router;
+    return router;
+}
+
+export default storeRoutes;

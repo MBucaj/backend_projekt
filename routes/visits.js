@@ -1,25 +1,31 @@
 import express from 'express';
-const router = express.Router();
 
-let visits = [];
+function visitRoutes(db) {
+    const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.json(visits);
-});
+    router.get('/', async (req, res) => {
+        try {
+            let visits_collection = db.collection('visits');
+            let visits = await visits_collection.find().toArray();
+            res.status(200).json(visits);
+        } catch (error) {
+            res.status(500).json({ error: 'Greška pri dohvaćanju posjeta' });
+        }
+    });
 
-router.post('/', (req, res) => {
+    router.post('/', async (req, res) => {
+        let noviPosjet = req.body;
 
-  const newVisit = {
-    id: visits.length + 1,
-    store: req.body.store,
-    date: req.body.date,
-    kilometers: req.body.kilometers,
-    note: req.body.note
-  };
+        try {
+            let visits_collection = db.collection('visits');
+            let result = await visits_collection.insertOne(noviPosjet);
+            res.status(201).json({ insertedId: result.insertedId });
+        } catch (error) {
+            res.status(400).json({ error: 'Greška pri dodavanju posjeta' });
+        }
+    });
 
-  visits.push(newVisit);
+    return router;
+}
 
-  res.status(201).json(newVisit);
-});
-
-export default router;
+export default visitRoutes;

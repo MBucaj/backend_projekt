@@ -1,9 +1,12 @@
 import express from 'express';
-
 import storeRoutes from './routes/stores.js';
 import visitRoutes from './routes/visits.js';
+import { connectToDatabase } from './db.js';
+
 
 const app = express(); 
+
+let db = await connectToDatabase();
 
 const PORT = 3000;
 
