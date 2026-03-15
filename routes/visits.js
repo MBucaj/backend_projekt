@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 let visits = [];
@@ -22,4 +22,4 @@ router.post('/', (req, res) => {
   res.status(201).json(newVisit);
 });
 
-module.exports = router;
+export default router;

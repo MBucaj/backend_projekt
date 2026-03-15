@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 let stores = [
@@ -21,4 +21,4 @@ router.post('/', (req, res) => {
   res.status(201).json(newStore);
 });
 
-module.exports = router;
+export default router;
