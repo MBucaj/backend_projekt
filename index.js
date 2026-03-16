@@ -1,24 +1,26 @@
 import express from 'express';
+import { connectToDatabase } from './db.js';
 import storeRoutes from './routes/stores.js';
 import visitRoutes from './routes/visits.js';
-import { connectToDatabase } from './db.js';
 
-
-const app = express(); 
-
-let db = await connectToDatabase();
-
+const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
+const db = await connectToDatabase();
+
 app.get('/', (req, res) => {
-    res.send('SalesTrack backend radi');
+    return res.send('SalesTrack backend radi');
 });
 
-app.use('/stores', storeRoutes);
-app.use('/visits', visitRoutes);
+app.use('/stores', storeRoutes(db));
+app.use('/visits', visitRoutes(db));
 
-app.listen(PORT, () => {
-    console.log(`Server radi na http://localhost:${PORT}`);
+app.listen(PORT, (error) => {
+    if (error) {
+        console.log('Greška prilikom pokretanja servera', error);
+    } else {
+        console.log(`Server radi na http://localhost:${PORT}`);
+    }
 });

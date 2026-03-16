@@ -4,24 +4,34 @@ function storeRoutes(db) {
     const router = express.Router();
 
     router.get('/', async (req, res) => {
+        console.log('GET /stores ušao u rutu');
+
         try {
-            let stores_collection = db.collection('stores');
-            let stores = await stores_collection.find().toArray();
-            res.status(200).json(stores);
+            const storesCollection = db.collection('stores');
+            const stores = await storesCollection.find({}).toArray();
+
+            console.log('Dohvaćene trgovine:', stores);
+            return res.status(200).json(stores);
         } catch (error) {
-            res.status(500).json({ error: 'Greška pri dohvaćanju trgovina' });
+            console.error('Greška u GET /stores:', error);
+            return res.status(500).json({ error: 'Greška pri dohvaćanju trgovina' });
         }
     });
 
     router.post('/', async (req, res) => {
-        let novaTrgovina = req.body;
+        console.log('POST /stores ušao u rutu');
+        console.log('Body:', req.body);
 
         try {
-            let stores_collection = db.collection('stores');
-            let result = await stores_collection.insertOne(novaTrgovina);
-            res.status(201).json({ insertedId: result.insertedId });
+            const novaTrgovina = req.body;
+            const storesCollection = db.collection('stores');
+            const result = await storesCollection.insertOne(novaTrgovina);
+
+            console.log('Upisano:', result.insertedId);
+            return res.status(201).json({ insertedId: result.insertedId });
         } catch (error) {
-            res.status(400).json({ error: 'Greška pri dodavanju trgovine' });
+            console.error('Greška u POST /stores:', error);
+            return res.status(500).json({ error: 'Greška pri dodavanju trgovine' });
         }
     });
 
