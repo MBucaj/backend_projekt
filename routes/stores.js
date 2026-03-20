@@ -1,4 +1,5 @@
 import express from 'express';
+import { ObjectId } from 'mongodb';
 
 function storeRoutes(db) {
     const router = express.Router();
@@ -18,22 +19,59 @@ function storeRoutes(db) {
         }
     });
 
-    router.post('/', async (req, res) => {
-        console.log('POST /stores ušao u rutu');
-        console.log('Body:', req.body);
+    router.get('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
 
-        try {
-            const novaTrgovina = req.body;
-            const storesCollection = db.collection('stores');
-            const result = await storesCollection.insertOne(novaTrgovina);
+        const storesCollection = db.collection('stores');
+        const store = await storesCollection.findOne({ _id: new ObjectId(id) });
 
-            console.log('Upisano:', result.insertedId);
-            return res.status(201).json({ insertedId: result.insertedId });
-        } catch (error) {
-            console.error('Greška u POST /stores:', error);
-            return res.status(500).json({ error: 'Greška pri dodavanju trgovine' });
+        if (!store) {
+            return res.status(404).json({ error: 'Trgovina nije pronađena.' });
         }
-    });
+
+        return res.status(200).json(store);
+    } catch (error) {
+        console.error('Greška u GET /stores/:id:', error);
+        return res.status(500).json({ error: 'Greška pri dohvaćanju trgovine.' });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const storesCollection = db.collection('stores');
+        const result = await storesCollection.deleteOne({ _id: new ObjectId(id) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Trgovina nije pronađena.' });
+        }
+
+        return res.status(200).json({ message: 'Trgovina je obrisana.' });
+    } catch (error) {
+        console.error('Greška u DELETE /stores/:id:', error);
+        return res.status(500).json({ error: 'Greška pri brisanju trgovine.' });
+    }
+});
+
+   router.post('/', async (req, res) => {
+    try {
+        const novaTrgovina = req.body;
+
+        if (!novaTrgovina.name || !novaTrgovina.city) {
+            return res.status(400).json({ error: 'Name i city su obavezni.' });
+        }
+
+        const storesCollection = db.collection('stores');
+        const result = await storesCollection.insertOne(novaTrgovina);
+
+        return res.status(201).json({ insertedId: result.insertedId });
+    } catch (error) {
+        console.error('Greška u POST /stores:', error);
+        return res.status(500).json({ error: 'Greška pri dodavanju trgovine' });
+    }
+});
 
     return router;
 }
