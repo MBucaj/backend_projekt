@@ -60,7 +60,8 @@ router.patch('/:id', async (req, res) => {
         const id = req.params.id;
         const podaciZaAzuriranje = req.body;
 
-        if (!podaciZaAzuriranje.name && !podaciZaAzuriranje.city) {
+        if (
+    podaciZaAzuriranje.name === undefined && podaciZaAzuriranje.city === undefined) {
             return res.status(400).json({ error: 'Morate poslati name ili city za ažuriranje.' });
         }
 
