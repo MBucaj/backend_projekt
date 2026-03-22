@@ -55,6 +55,35 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.patch('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const podaciZaAzuriranje = req.body;
+
+        if (!podaciZaAzuriranje.name && !podaciZaAzuriranje.city) {
+            return res.status(400).json({ error: 'Morate poslati name ili city za ažuriranje.' });
+        }
+
+        const storesCollection = db.collection('stores');
+
+        const result = await storesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: podaciZaAzuriranje }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Trgovina nije pronađena.' });
+        }
+
+        return res.status(200).json({ message: 'Trgovina je ažurirana.' });
+    } catch (error) {
+        console.error('Greška u PATCH /stores/:id:', error);
+        return res.status(500).json({ error: 'Greška pri ažuriranju trgovine.' });
+    }
+});
+
+
+
    router.post('/', async (req, res) => {
     try {
         const novaTrgovina = req.body;
