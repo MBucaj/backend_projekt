@@ -27,3 +27,25 @@ export async function checkPassword(plainPassword, hashedPassword) {
     return false;
   }
 }
+
+// Kod za generiranje JWT tokena
+export async function generateJWT(payload) {
+  try {
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    return token;
+  } catch (err) {
+    console.error("Greška prilikom generiranja JWT tokena:", err);
+    return null;
+  }
+}
+
+// Provjera valjanosti JWT tokena
+export async function verifyJWT(token) {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded;
+  } catch (err) {
+    console.error("Greška prilikom provjere JWT tokena:", err);
+    return null;
+  }
+}
