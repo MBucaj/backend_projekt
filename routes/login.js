@@ -22,6 +22,7 @@ export default function loginRoute(db) {
     const token = await generateJWT({
       userId: user._id,
       username: user.username,
+      email: user.email,
     });
 
     res.json({ token });
