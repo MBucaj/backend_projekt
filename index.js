@@ -5,6 +5,7 @@ import visitRoutes from "./routes/visits.js";
 import cors from "cors";
 import loginRoute from "./routes/login.js";
 import registerRoute from "./routes/register.js";
+import profileRoute from "./routes/profile.js";
 import { authMiddleware } from "./authMiddleware.js";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/stores", authMiddleware, storeRoutes(db));
 app.use("/visits", authMiddleware, visitRoutes(db));
 app.use("/login", loginRoute(db));
 app.use("/register", registerRoute(db));
+app.use("/profile", authMiddleware, profileRoute(db));
 
 app.listen(PORT, (error) => {
   if (error) {
