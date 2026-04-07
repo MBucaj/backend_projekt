@@ -7,6 +7,14 @@ import loginRoute from "./routes/login.js";
 import registerRoute from "./routes/register.js";
 import profileRoute from "./routes/profile.js";
 import { authMiddleware } from "./authMiddleware.js";
+import categoryRoute from "./routes/categories.js";
+import productRoute from "./routes/products.js";
+import contactRoute from "./routes/contacts.js";
+import storeContactRoute from "./routes/storeContacts.js";
+import orderRoute from "./routes/orders.js";
+
+
+
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +33,13 @@ app.use("/visits", authMiddleware, visitRoutes(db));
 app.use("/login", loginRoute(db));
 app.use("/register", registerRoute(db));
 app.use("/profile", authMiddleware, profileRoute(db));
+app.use("/categories", authMiddleware, categoryRoute(db));
+app.use("/products", authMiddleware, productRoute(db));
+app.use("/contacts", authMiddleware, contactRoute(db));
+app.use("/storecontacts", authMiddleware, storeContactRoute(db));
+app.use("/orders", authMiddleware, orderRoute(db));
+
+
 
 app.listen(PORT, (error) => {
   if (error) {
