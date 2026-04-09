@@ -12,6 +12,7 @@ import productRoute from "./routes/products.js";
 import contactRoute from "./routes/contacts.js";
 import storeContactRoute from "./routes/storeContacts.js";
 import orderRoute from "./routes/orders.js";
+import routeRoute from "./routes/routes.js";
 
 
 
@@ -38,6 +39,7 @@ app.use("/products", authMiddleware, productRoute(db));
 app.use("/contacts", authMiddleware, contactRoute(db));
 app.use("/storecontacts", authMiddleware, storeContactRoute(db));
 app.use("/orders", authMiddleware, orderRoute(db));
+app.use("/routes", authMiddleware, routeRoute(db));
 
 
 

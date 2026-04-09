@@ -8,6 +8,7 @@ function visitRoutes(db) {
     try {
       const visitsCollection = db.collection("visits");
       const storesCollection = db.collection("stores");
+      const routesCollection = db.collection("routes");
 
       const visits = await visitsCollection
         .find({ userId: req.authorised_user.userId })
@@ -18,9 +19,15 @@ function visitRoutes(db) {
       for (const visit of visits) {
         const store = await storesCollection.findOne({ _id: visit.storeId });
 
+        let route = null;
+        if (visit.routeId) {
+          route = await routesCollection.findOne({ _id: visit.routeId });
+        }
+
         visitsSaTrgovinom.push({
           ...visit,
           store: store || null,
+          route: route ? { _id: route._id, name: route.name } : null,
         });
       }
 
