@@ -1,0 +1,29 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: salestrack-db
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: salestrack-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - MONGO_DB_NAME=salestrack
+      - JWT_SECRET=tvoj_tajni_kljuc
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend_projekt
+    container_name: salestrack-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
