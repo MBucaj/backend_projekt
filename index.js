@@ -26,7 +26,6 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 const db = await connectToDatabase();
 
