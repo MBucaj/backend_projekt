@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({
-  origin: ['https://earnest-semolina-4a6ec0.netlify.app', 'http://localhost:5173', 'http://localhost:8080'],
+  origin: ['https://salestrack0.netlify.app', 'http://localhost:5173', 'http://localhost:8080'],
 }));
 
 const db = await connectToDatabase();
