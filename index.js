@@ -20,10 +20,13 @@ import routeRoute from "./routes/routes.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(cors({
+const corsOptions = {
   origin: ['https://salestrack0.netlify.app', 'http://localhost:5173', 'http://localhost:8080'],
-}));
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 const db = await connectToDatabase();
 
